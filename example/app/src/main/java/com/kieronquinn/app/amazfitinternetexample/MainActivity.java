@@ -1,6 +1,7 @@
 package com.kieronquinn.app.amazfitinternetexample;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -26,16 +27,26 @@ public class MainActivity extends Activity {
             public void onChannelChanged(boolean ready) {
                 //Transporter is ready if ready is true, send an action now. This will **NOT** work before the transporter is ready!
                 //You can change the action to whatever you want, there's also an option for a data bundle to be added (see below)
-                if(ready)transporter.send("hello_world!");
+                if(ready) {
+                    sendActionWithData("action-name");
+                }
             }
         });
         transporter.addDataListener(new Transporter.DataListener() {
             @Override
             public void onDataReceived(TransportDataItem transportDataItem) {
                 Log.d("TransporterExample", "Item received action: " + transportDataItem.getAction());
-                if(transportDataItem.getAction().equals("hello_world")) {
+                if(transportDataItem.getAction().equals("SEND_TASKER_INTENT")) {
                     DataBundle receivedData = transportDataItem.getData();
                     //Do whatever with your action & data. You can send data back in the same way using the same transporter
+
+                    Log.d("TransporterExample", "Broadcasting intent");
+
+                    Intent intent = new Intent();
+                    intent.setAction("net.dinglisch.android.tasker.ACTION_TASK");
+                    intent.putExtra("task_name", "watch_task");
+                    intent.putExtra(android.content.Intent.EXTRA_TEXT, receivedData.getString("DATA"));
+                    sendBroadcast(intent);
                 }
             }
         });
@@ -45,18 +56,15 @@ public class MainActivity extends Activity {
     @Override
     public void onStop(){
         super.onStop();
-        transporter.removeAllChannelListeners();
-        transporter.removeAllDataListeners();
-        transporter.disconnectTransportService();
     }
 
-    private void sendActionWithData(){
+    private void sendActionWithData(String dataString){
         //Create a bundle of data
         DataBundle dataBundle = new DataBundle();
         //Key value pair
-        dataBundle.putString("hello", "world");
+        dataBundle.putString("DATA", dataString);
         //Send action
-        transporter.send("hello_world_data", dataBundle);
+        transporter.send("SEND_TASKER_INTENT", dataBundle);
     }
 
     private void sendActionWithDataAndCallback(){
