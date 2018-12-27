@@ -18,6 +18,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupTransporter();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+    }
+
+    private void setupTransporter() {
         //Create the transporter **WARNING** The second parameter MUST be the same on both your watch and phone companion apps!
         //Please change the module name to something unique, but keep it the same for both apps!
         transporter = (TransporterClassic) Transporter.get(this, "example_module");
@@ -45,17 +54,12 @@ public class MainActivity extends Activity {
                     Intent intent = new Intent();
                     intent.setAction("net.dinglisch.android.tasker.ACTION_TASK");
                     intent.putExtra("task_name", "watch_task");
-                    intent.putExtra(android.content.Intent.EXTRA_TEXT, receivedData.getString("DATA"));
+                    intent.putExtra(Intent.EXTRA_TEXT, receivedData.getString("DATA"));
                     sendBroadcast(intent);
                 }
             }
         });
         transporter.connectTransportService();
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
     }
 
     private void sendActionWithData(String dataString){
