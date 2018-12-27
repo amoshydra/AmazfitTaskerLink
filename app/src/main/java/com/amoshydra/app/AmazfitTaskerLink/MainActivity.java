@@ -1,4 +1,4 @@
-package com.kieronquinn.app.amazfitinternetexample;
+package com.amoshydra.app.AmazfitTaskerLink;
 
 import android.app.Activity;
 import android.os.Bundle;

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.kieronquinn.app.amazfitinternetexample"
+        applicationId 'com.amoshydra.app.AmazfitTaskerLink'
         minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
@@ -16,9 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'commons-io:commons-io:2.0.1'
 }
