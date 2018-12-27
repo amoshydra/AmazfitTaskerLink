@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.huami.watch.transport.DataBundle;
-import com.huami.watch.transport.DataTransportResult;
 import com.huami.watch.transport.TransportDataItem;
 import com.kieronquinn.library.amazfitcommunication.Transporter;
 import com.kieronquinn.library.amazfitcommunication.TransporterClassic;
