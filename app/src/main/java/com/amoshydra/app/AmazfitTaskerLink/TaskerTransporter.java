@@ -13,7 +13,7 @@ import com.kieronquinn.library.amazfitcommunication.TransporterClassic;
 
 public class TaskerTransporter {
     public static final String TASKER_TRANSPORTER_ACTION_NAME = "SEND_TASKER_INTENT";
-    public static final String DEFAULT_CHANNEL_NAME = "example_module";
+    public static final String DEFAULT_CHANNEL_NAME = "com.amoshydra.app.AmazfitTaskerLink";
     public static final String DATA_BUNDLE_ACTION_KEY = "ACTION_NAME";
     public static final String CLASS_NAME = "TaskerTransporter";
 
@@ -34,7 +34,7 @@ public class TaskerTransporter {
             //Transporter is ready if ready is true, send an action now. This will **NOT** work before the transporter is ready!
             //You can change the action to whatever you want, there's also an option for a data bundle to be added (see below)
             if(ready) {
-                sendAction("action-name");
+                sendAction("link-ready");
             }
         });
         transporter.addDataListener(transportDataItem -> {
