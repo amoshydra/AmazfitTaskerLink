@@ -32,7 +32,7 @@ public class TransporterService extends Service {
         CharSequence name = getString(R.string.channel_name);
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel mChannel = new NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_NONE);
             notificationManager.createNotificationChannel(mChannel);
         }
         Notification notification = new NotificationCompat.Builder(this, channelId)
