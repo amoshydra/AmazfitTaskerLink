@@ -49,17 +49,19 @@ public class MainActivity extends Activity {
                     DataBundle receivedData = transportDataItem.getData();
                     //Do whatever with your action & data. You can send data back in the same way using the same transporter
 
-                    Log.d("TransporterExample", "Broadcasting intent");
-
-                    Intent intent = new Intent();
-                    intent.setAction("net.dinglisch.android.tasker.ACTION_TASK");
-                    intent.putExtra("task_name", "watch_task");
-                    intent.putExtra(Intent.EXTRA_TEXT, receivedData.getString("DATA"));
-                    sendBroadcast(intent);
+                    sendTaskerIntent(receivedData.getString("DATA"));
                 }
             }
         });
         transporter.connectTransportService();
+    }
+
+    private void sendTaskerIntent(String actionName) {
+        Intent intent = new Intent();
+        intent.setAction("net.dinglisch.android.tasker.ACTION_TASK");
+        intent.putExtra("task_name", "watch_task");
+        intent.putExtra(Intent.EXTRA_TEXT, actionName);
+        sendBroadcast(intent);
     }
 
     private void sendActionWithData(String dataString){
