@@ -70,11 +70,8 @@ public class MainActivity extends Activity {
         //Key value pair
         dataBundle.putString("DATA", dataString);
         //Send action
-        transporter.send("SEND_TASKER_INTENT", dataBundle, new Transporter.DataSendResultCallback() {
-            @Override
-            public void onResultBack(DataTransportResult dataTransportResult) {
+        transporter.send("SEND_TASKER_INTENT", dataBundle, (dataTransportResult) -> {
             Log.d("TransporterExample", "onResultBack result code " + dataTransportResult.getResultCode());
-            }
         });
     }
 }
