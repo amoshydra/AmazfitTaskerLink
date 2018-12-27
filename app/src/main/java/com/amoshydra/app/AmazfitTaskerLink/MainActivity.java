@@ -1,4 +1,4 @@
-package com.kieronquinn.app.amazfitinternetexample;
+package com.amoshydra.app.AmazfitTaskerLink;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import com.huami.watch.transport.TransportDataItem;
 import com.kieronquinn.library.amazfitcommunication.Transporter;
 import com.kieronquinn.library.amazfitcommunication.TransporterClassic;
 
-public class CustomActionActivity extends Activity {
+public class MainActivity extends Activity {
 
     private TransporterClassic transporter;
 
