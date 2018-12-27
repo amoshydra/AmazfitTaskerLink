@@ -2,67 +2,74 @@ package com.kieronquinn.app.amazfitinternetexample;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.util.Log;
 
-import com.kieronquinn.library.amazfitcommunication.internet.LocalHTTPRequest;
-import com.kieronquinn.library.amazfitcommunication.internet.LocalHTTPResponse;
-import com.kieronquinn.library.amazfitcommunication.internet.LocalURLConnection;
-
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.huami.watch.transport.DataBundle;
+import com.huami.watch.transport.DataTransportResult;
+import com.huami.watch.transport.TransportDataItem;
+import com.kieronquinn.library.amazfitcommunication.Transporter;
+import com.kieronquinn.library.amazfitcommunication.TransporterClassic;
 
 public class MainActivity extends Activity {
+
+    private TransporterClassic transporter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setText(getString(R.string.loading));
-        /*
-         * Getting data from the internet (HTTP GET)
-         */
-        LocalURLConnection localURLConnection = new LocalURLConnection();
-        try {
-            localURLConnection.setUrl(new URL("http://quinny898.co.uk/test.txt"));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        LocalHTTPRequest localHTTPRequest = new LocalHTTPRequest(this, localURLConnection, new LocalHTTPResponse() {
+        //Create the transporter **WARNING** The second parameter MUST be the same on both your watch and phone companion apps!
+        //Please change the module name to something unique, but keep it the same for both apps!
+        transporter = (TransporterClassic) Transporter.get(this, "example_module");
+        //Add a channel listener to listen for ready event
+        transporter.addChannelListener(new Transporter.ChannelListener() {
             @Override
-            public void onResult(HttpURLConnection httpURLConnection) {
-                try {
-                    setText(IOUtils.toString(httpURLConnection.getInputStream()));
-                } catch (IOException e) {
-                    e.printStackTrace();
+            public void onChannelChanged(boolean ready) {
+                //Transporter is ready if ready is true, send an action now. This will **NOT** work before the transporter is ready!
+                //You can change the action to whatever you want, there's also an option for a data bundle to be added (see below)
+                if(ready)transporter.send("hello_world!");
+            }
+        });
+        transporter.addDataListener(new Transporter.DataListener() {
+            @Override
+            public void onDataReceived(TransportDataItem transportDataItem) {
+                Log.d("TransporterExample", "Item received action: " + transportDataItem.getAction());
+                if(transportDataItem.getAction().equals("hello_world")) {
+                    DataBundle receivedData = transportDataItem.getData();
+                    //Do whatever with your action & data. You can send data back in the same way using the same transporter
                 }
             }
+        });
+        transporter.connectTransportService();
+    }
 
-            @Override
-            public void onConnectError() {
-                setText(getString(R.string.error));
-            }
+    @Override
+    public void onStop(){
+        super.onStop();
+        transporter.removeAllChannelListeners();
+        transporter.removeAllDataListeners();
+        transporter.disconnectTransportService();
+    }
 
+    private void sendActionWithData(){
+        //Create a bundle of data
+        DataBundle dataBundle = new DataBundle();
+        //Key value pair
+        dataBundle.putString("hello", "world");
+        //Send action
+        transporter.send("hello_world_data", dataBundle);
+    }
+
+    private void sendActionWithDataAndCallback(){
+        //Create a bundle of data
+        DataBundle dataBundle = new DataBundle();
+        //Key value pair
+        dataBundle.putString("hello", "world");
+        //Send action with a callback. This also works without the data bundle
+        transporter.send("hello_world_data", dataBundle, new Transporter.DataSendResultCallback() {
             @Override
-            public void onTimeout() {
-                setText(getString(R.string.timeout));
+            public void onResultBack(DataTransportResult dataTransportResult) {
+                Log.d("TransporterExample", "onResultBack result code " + dataTransportResult.getResultCode());
             }
         });
     }
-
-    private void setText(final String text) {
-        //Has to be run on the UI thread, a lot of receiver stuff isn't
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView textView = findViewById(R.id.textView);
-                textView.setText(text);
-            }
-        });
-    }
-
 }
