@@ -64,19 +64,10 @@ public class MainActivity extends Activity {
         //Key value pair
         dataBundle.putString("DATA", dataString);
         //Send action
-        transporter.send("SEND_TASKER_INTENT", dataBundle);
-    }
-
-    private void sendActionWithDataAndCallback(){
-        //Create a bundle of data
-        DataBundle dataBundle = new DataBundle();
-        //Key value pair
-        dataBundle.putString("hello", "world");
-        //Send action with a callback. This also works without the data bundle
-        transporter.send("hello_world_data", dataBundle, new Transporter.DataSendResultCallback() {
+        transporter.send("SEND_TASKER_INTENT", dataBundle, new Transporter.DataSendResultCallback() {
             @Override
             public void onResultBack(DataTransportResult dataTransportResult) {
-                Log.d("TransporterExample", "onResultBack result code " + dataTransportResult.getResultCode());
+            Log.d("TransporterExample", "onResultBack result code " + dataTransportResult.getResultCode());
             }
         });
     }
