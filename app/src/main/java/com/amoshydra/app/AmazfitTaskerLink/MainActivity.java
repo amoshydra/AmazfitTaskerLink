@@ -29,6 +29,7 @@ public class MainActivity extends Activity {
     @Override
     public void onStop(){
         super.onStop();
+        unbindService(mConnection);
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {

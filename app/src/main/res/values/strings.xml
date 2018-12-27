@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Amazfit Tasker Link</string>
+    <string name="notif">Running in the foreground. Long press to hide</string>
+    <string name="channel_name">Foreground Service</string>
     <string name="loading">Loading</string>
     <string name="error">Error</string>
     <string name="timeout">Timeout</string>
