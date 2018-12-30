@@ -27,6 +27,21 @@ public class TransporterService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        createForegroundNotification();
+
+        taskerTransporter = new TaskerTransporter(this);
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    public void sendAction(String actionName) {
+        taskerTransporter.sendAction(actionName);
+    }
+    
+    private boolean createForegroundNotification() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             int notificationId = 1;
             String channelId = "foreground_service";
@@ -42,17 +57,9 @@ public class TransporterService extends Service {
                     .build();
             notificationManager.notify(notificationId, notification);
             startForeground(notificationId, notification);
+            return true;
         }
-
-        taskerTransporter = new TaskerTransporter(this);
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    public void sendAction(String actionName) {
-        taskerTransporter.sendAction(actionName);
+        
+        return false;
     }
 }
