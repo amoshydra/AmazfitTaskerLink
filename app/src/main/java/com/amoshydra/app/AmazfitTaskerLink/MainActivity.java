@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
                 "Take picture",
                 "Lock phone",
                 "Play music",
+                "Locate phone",
                 "Trigger 1",
                 "Trigger 2",
         };
