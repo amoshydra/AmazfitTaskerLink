@@ -39,8 +39,11 @@ public class MainActivity extends Activity {
         };
 
         // Render list
-        final TriggerRenderer triggerRenderer = new TriggerRenderer(this, transporterService, renderInstructions);
-        triggerRenderer.render(R.id.trigger_button_container);
+        final TriggerRenderer triggerRenderer = new TriggerRenderer(this, renderInstructions);
+        triggerRenderer.render(
+                R.id.trigger_button_container,
+                (view, label, action) -> transporterService.sendAction(action)
+        );
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
