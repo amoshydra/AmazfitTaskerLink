@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.KeyEvent;
 
 public class MainActivity extends Activity {
     TransporterService transporterService;
+    TriggerRenderer triggerRenderer;
     boolean mBound = false;
 
     @Override
@@ -28,6 +30,23 @@ public class MainActivity extends Activity {
         unbindService(mConnection);
     }
 
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (!mBound) return true;
+
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_F5:
+                return triggerRenderer.navigate(-1);
+            case KeyEvent.KEYCODE_F6:
+                return triggerRenderer.navigate(1);
+            case KeyEvent.KEYCODE_F10:
+                return triggerRenderer.navigate(0);
+            default:
+                return true;
+        }
+    }
+
     public void onAppServiceReady() {
         // Get list to render
         final String[] renderInstructions = {
@@ -39,7 +58,7 @@ public class MainActivity extends Activity {
         };
 
         // Render list
-        final TriggerRenderer triggerRenderer = new TriggerRenderer(this, renderInstructions);
+        triggerRenderer = new TriggerRenderer(this, renderInstructions);
         triggerRenderer.render(
                 R.id.trigger_button_container,
                 (view, label, action) -> transporterService.sendAction(action)

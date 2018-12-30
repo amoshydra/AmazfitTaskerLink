@@ -2,11 +2,8 @@ package com.amoshydra.app.AmazfitTaskerLink;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
  * Created by amosh on 12/30/2018.
@@ -16,20 +13,20 @@ interface TriggerRendererButtonTriggeredCallback {
 }
 
 public class TriggerRenderer {
-    private float densityPixelFactor;
+
     private String[] renderInstructions;
+    private TriggerRendererItem[] rendererItems;
+    private int currentlyFocused = 0;
     private Context context;
 
     public TriggerRenderer(Context _context, String[] _renderInstructions) {
         // Store context and data
         context = _context;
         renderInstructions = _renderInstructions;
-
-        // Initialize params
-        densityPixelFactor = context.getResources().getDisplayMetrics().density;
     }
 
     public void render(int containerId, TriggerRendererButtonTriggeredCallback callback) {
+        rendererItems = new TriggerRendererItem[renderInstructions.length];
         final LinearLayout triggerButtonContainer = ((Activity) context).findViewById(containerId);
         final LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -37,44 +34,36 @@ public class TriggerRenderer {
                 1
         );
 
-        for (String renderInstruction : renderInstructions) {
-            View view = createButton(
-                    renderInstruction,
-                    renderInstruction,
+        // Create button views
+        for (int i = 0; i < renderInstructions.length; i++) {
+            rendererItems[i] = createButton(
+                    renderInstructions[i],
+                    renderInstructions[i],
                     callback
             );
-            triggerButtonContainer.addView(view, buttonLayoutParams);
+        }
+        // Render button views
+        for (TriggerRendererItem item: rendererItems) {
+            triggerButtonContainer.addView(item.getView(), buttonLayoutParams);
         }
     }
 
-    private View createButton(String label, String action, TriggerRendererButtonTriggeredCallback callback) {
-        LinearLayout buttonContainer = new LinearLayout(context);
+    private TriggerRendererItem createButton(String label, String action, TriggerRendererButtonTriggeredCallback callback) {
+        TriggerRendererItem triggerRendererItem = new TriggerRendererItem(label, action, callback);
+        triggerRendererItem.render(context);
+        return triggerRendererItem;
+    }
 
-        Button button = new Button(context);
-        button.setGravity(Gravity.CENTER_VERTICAL);
-        buttonContainer.addView(button, new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                35
-        ));
+    public boolean navigate(int direction) {
+        if (direction == 0) {
+            rendererItems[currentlyFocused].trigger();
+        } else {
+            int newFocusItem = Math.max(0, Math.min(rendererItems.length - 1, currentlyFocused += direction));
 
-        TextView textView = new TextView(context);
-        textView.setText(label);
-        textView.setGravity(Gravity.CENTER_VERTICAL);
-        textView.setPadding(
-                (int)(4 * densityPixelFactor),
-                0,
-                (int)(20 * densityPixelFactor),
-                0
-        );
-        buttonContainer.addView(textView, new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                65
-        ));
-        button.setOnClickListener(view -> {
-            callback.callAfterTriggerHandler(view, label, action);
-        });
-        return buttonContainer;
+            rendererItems[newFocusItem].focus();
+            currentlyFocused = newFocusItem;
+        }
+
+        return true;
     }
 }
