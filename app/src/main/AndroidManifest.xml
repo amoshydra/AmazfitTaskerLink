@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.amoshydra.app.AmazfitTaskerLink">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -16,7 +17,6 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -24,18 +24,13 @@
         <service
             android:name=".TransporterService"
             android:exported="true"
-        >
-            <intent-filter>
-                <action android:name="com.amoshydra.app.AmazfitTaskerLink.TransporterService"/>
-            </intent-filter>
-        </service>
+        ></service>
         <receiver
             android:name=".BootReceiver"
             android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="com.amoshydra.app.AmazfitTaskerLink.START_SERVICE" />
             </intent-filter>
         </receiver>
     </application>
