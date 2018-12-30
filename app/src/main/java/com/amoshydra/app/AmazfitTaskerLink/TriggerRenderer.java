@@ -2,9 +2,11 @@ package com.amoshydra.app.AmazfitTaskerLink;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Created by amosh on 12/30/2018.
@@ -31,27 +33,48 @@ public class TriggerRenderer {
         final LinearLayout triggerButtonContainer = ((Activity) context).findViewById(containerId);
         final LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                (int)(60 * densityPixelFactor),
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 1
         );
 
         for (String renderInstruction : renderInstructions) {
-            Button button = createButton(
+            View view = createButton(
                     renderInstruction,
                     renderInstruction,
                     callback
             );
-            triggerButtonContainer.addView(button, buttonLayoutParams);
+            triggerButtonContainer.addView(view, buttonLayoutParams);
         }
     }
 
-    private Button createButton(String label, String action, TriggerRendererButtonTriggeredCallback callback) {
+    private View createButton(String label, String action, TriggerRendererButtonTriggeredCallback callback) {
+        LinearLayout buttonContainer = new LinearLayout(context);
+
         Button button = new Button(context);
-        button.setText(label);
-        button.setOnLongClickListener(view -> {
+        button.setGravity(Gravity.CENTER_VERTICAL);
+        buttonContainer.addView(button, new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                35
+        ));
+
+        TextView textView = new TextView(context);
+        textView.setText(label);
+        textView.setGravity(Gravity.CENTER_VERTICAL);
+        textView.setPadding(
+                (int)(4 * densityPixelFactor),
+                0,
+                (int)(20 * densityPixelFactor),
+                0
+        );
+        buttonContainer.addView(textView, new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                65
+        ));
+        button.setOnClickListener(view -> {
             callback.callAfterTriggerHandler(view, label, action);
-            return true;
         });
-        return button;
+        return buttonContainer;
     }
 }
