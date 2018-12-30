@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 public class MainActivity extends Activity {
     TransporterService transporterService;
@@ -22,33 +20,27 @@ public class MainActivity extends Activity {
         bindService(serviceIntent, mConnection, this.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_main);
-        final float densityPixelFactor = this.getResources().getDisplayMetrics().density;
-        final LinearLayout triggerButtonContainer = findViewById(R.id.trigger_button_container);
-        final LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (int)(60 * densityPixelFactor),
-                1
-        );
-
-        for (int i = 0; i < 5; i++) {
-            String indexString = String.valueOf(i + 1);
-
-            Button button = new Button(this);
-            button.setText("Trigger " + indexString );
-            triggerButtonContainer.addView(button, buttonLayoutParams);
-
-            button.setOnLongClickListener(v -> {
-                transporterService.sendAction("trigger-" + indexString );
-                button.requestFocus();
-                return true;
-            });
-        }
     }
 
     @Override
     public void onStop(){
         super.onStop();
         unbindService(mConnection);
+    }
+
+    public void onAppServiceReady() {
+        // Get list to render
+        final String[] renderInstructions = {
+                "Take picture",
+                "Lock phone",
+                "Play music",
+                "Trigger 1",
+                "Trigger 2",
+        };
+
+        // Render list
+        final TriggerRenderer triggerRenderer = new TriggerRenderer(this, transporterService, renderInstructions);
+        triggerRenderer.render(R.id.trigger_button_container);
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -58,6 +50,7 @@ public class MainActivity extends Activity {
             TransporterService.TransporterServiceBinder binder = (TransporterService.TransporterServiceBinder) service;
             transporterService = binder.getService();
             mBound = true;
+            onAppServiceReady();
         }
 
         @Override
